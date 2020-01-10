@@ -25,9 +25,8 @@
 package org.owasp.html;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.regex.Pattern;
-
-import org.apache.commons.codec.binary.Base64;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.Test;
@@ -326,7 +325,7 @@ public class AntiSamyTest extends TestCase {
   public static void testIllegalXML() throws Exception {
     for (int i = 0; i < BASE64_BAD_XML_STRINGS.length; i++) {
       String testStr = new String(
-          Base64.decodeBase64(BASE64_BAD_XML_STRINGS[i]),
+          Base64.getDecoder().decode(BASE64_BAD_XML_STRINGS[i]),
           "UTF-8");
       sanitize(testStr);
       sanitize(testStr);

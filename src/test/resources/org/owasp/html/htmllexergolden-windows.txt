@@ -1,0 +1,246 @@
+QMARKMETA  [<?xml version="not-even-close"?>]  :  0-32
+TEXT       [\n\n]  :  32-36
+DIRECTIVE  [<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">]  :  36-99
+TEXT       [\n\n]  :  99-103
+COMMENT    [<!-- a test input for HtmlLexer -->]  :  103-138
+TEXT       [\n\n]  :  138-142
+TAGBEGIN   [<html]  :  142-147
+TAGEND     [>]  :  147-148
+TEXT       [\n]  :  148-150
+TAGBEGIN   [<head]  :  150-155
+TAGEND     [>]  :  155-156
+TEXT       [\n]  :  156-158
+TAGBEGIN   [<title]  :  158-164
+TAGEND     [>]  :  164-165
+TEXT       [Test File For HtmlLexer &amp; HtmlParser]  :  165-205
+TAGBEGIN   [</title]  :  205-212
+TAGEND     [>]  :  212-213
+TEXT       [\n]  :  213-215
+TAGBEGIN   [<link]  :  215-220
+ATTRNAME   [rel]  :  221-224
+ATTRVALUE  [stylesheet]  :  225-235
+ATTRNAME   [type]  :  236-240
+ATTRVALUE  ["text/css"]  :  241-251
+ATTRNAME   [src]  :  252-255
+ATTRVALUE  [foo/bar.css]  :  256-267
+TAGEND     [/>]  :  268-270
+TEXT       [\n]  :  270-272
+TAGBEGIN   [<body]  :  272-277
+ATTRNAME   [bgcolor]  :  280-287
+ATTRVALUE  [white]  :  288-293
+ATTRNAME   [linkcolor]  :  296-305
+ATTRVALUE  ["blue"]  :  308-314
+ATTRNAME   [onload]  :  317-323
+ATTRVALUE  ["document.writeln(\n  &quot;&lt;p&gt;properly escaped code in a handler&lt;/p&gt;&quot;);"]  :  324-414
+TAGEND     [>]  :  416-417
+TEXT       [\n\n]  :  417-421
+TAGBEGIN   [<script]  :  421-428
+ATTRNAME   [type]  :  429-433
+ATTRVALUE  ["text/javascript"]  :  434-451
+TAGEND     [>]  :  451-452
+UNESCAPED  [<!--\n\ndocument.writeln("<p>Some initialization code in global context</p>");\n\n-->]  :  452-537
+TAGBEGIN   [</script]  :  537-545
+TAGEND     [>]  :  545-546
+TEXT       [\n\n]  :  546-550
+TAGBEGIN   [<script]  :  550-557
+ATTRNAME   [type]  :  558-562
+ATTRVALUE  ["text/javascript"]  :  563-580
+TAGEND     [>]  :  580-581
+UNESCAPED  [\n// hi there\ndocument.writeln("<p>More initialization</p>");\n]  :  581-645
+TAGBEGIN   [</script]  :  645-653
+TAGEND     [>]  :  653-654
+TEXT       [\n\n]  :  654-658
+TAGBEGIN   [<div]  :  658-662
+ATTRNAME   [id]  :  663-665
+ATTRVALUE  [clickydiv]  :  666-675
+ATTRNAME   [onclick]  :  676-683
+ATTRVALUE  ["handleClicky(event)"]  :  684-705
+ATTRNAME   [ondblclick]  :  708-718
+ATTRVALUE  [this.onclick(event);return(false)]  :  719-752
+TAGEND     [>]  :  752-753
+TEXT       [\nClicky\n]  :  753-763
+TAGBEGIN   [</div]  :  763-768
+TAGEND     [>]  :  768-769
+TEXT       [\n\n]  :  769-773
+TAGBEGIN   [<input]  :  773-779
+ATTRNAME   [id]  :  780-782
+ATTRVALUE  [foo]  :  783-786
+TAGEND     [>]  :  786-787
+TEXT       [\n]  :  787-789
+TAGBEGIN   [<gxp:attr]  :  789-798
+ATTRNAME   [name]  :  799-803
+ATTRVALUE  ["onchange"]  :  804-814
+TAGEND     [>]  :  814-815
+TEXT       [alert("&lt;b&gt;hi&lt;/b&gt;");]  :  815-846
+TAGBEGIN   [</gxp:attr]  :  846-856
+TAGEND     [>]  :  856-857
+TEXT       [\n]  :  857-859
+TAGBEGIN   [</input]  :  859-866
+TAGEND     [>]  :  866-867
+TEXT       [\n\n]  :  867-871
+TAGBEGIN   [<pre]  :  871-875
+TAGEND     [>]  :  875-876
+TEXT       [&lt;div id=notarealtag onclick=notcode()&gt;]  :  876-920
+TAGBEGIN   [</pre]  :  920-925
+TAGEND     [>]  :  925-926
+TEXT       [\n\n]  :  926-930
+COMMENT    [<!-- some tokenization corner cases -->]  :  930-969
+TEXT       [\n\n< notatag ]  :  969-983
+TAGBEGIN   [<atag]  :  983-988
+TAGEND     [/>]  :  988-990
+TEXT       [\n\n</ notatag> ]  :  990-1006
+TAGBEGIN   [</redundantlyclosed]  :  1006-1025
+TAGEND     [/>]  :  1025-1027
+TEXT       [\n\n]  :  1027-1031
+TAGBEGIN   [<messyattributes]  :  1031-1047
+ATTRNAME   [a]  :  1048-1049
+ATTRVALUE  [b=c]  :  1050-1053
+ATTRNAME   [d]  :  1054-1055
+ATTRVALUE  ["e"]  :  1056-1059
+ATTRNAME   [f]  :  1059-1060
+ATTRVALUE  [g]  :  1061-1062
+ATTRNAME   [h]  :  1063-1064
+ATTRVALUE  [i]  :  1066-1067
+ATTRNAME   [j]  :  1068-1069
+ATTRVALUE  [k]  :  1071-1072
+ATTRNAME   [l]  :  1073-1074
+ATTRVALUE  [m]  :  1077-1078
+ATTRNAME   [checked]  :  1079-1086
+ATTRNAME   [n]  :  1087-1088
+ATTRVALUE  ["o"]  :  1089-1092
+TAGEND     [/>]  :  1092-1094
+TEXT       [\n\n< < < all in one text block > > >\n\n]  :  1094-1135
+TAGBEGIN   [<xmp]  :  1135-1139
+TAGEND     [>]  :  1139-1140
+UNESCAPED  [Make sure that <!-- comments don't obscure the xmp close]  :  1140-1196
+TAGBEGIN   [</xmp]  :  1196-1201
+TAGEND     [>]  :  1201-1202
+TEXT       [\n\n]  :  1202-1206
+SERVERCODE [<% # some php code here\nwrite("<pre>$horriblySyntacticConstruct1</pre>\\n\\n");\n%>]  :  1206-1288
+TEXT       [\n\n]  :  1288-1292
+TAGBEGIN   [<script]  :  1292-1299
+ATTRNAME   [type]  :  1300-1304
+ATTRVALUE  ["text/javascript"]  :  1305-1322
+TAGEND     [>]  :  1322-1323
+UNESCAPED  [<!--\nalert("hello world");\n// -->]  :  1323-1358
+TAGBEGIN   [</script]  :  1358-1366
+TAGEND     [>]  :  1366-1367
+TEXT       [\n\n]  :  1367-1371
+TAGBEGIN   [<script]  :  1371-1378
+TAGEND     [>]  :  1378-1379
+UNESCAPED  [/* ]  :  1379-1382
+TAGBEGIN   [</script]  :  1382-1390
+TAGEND     [>]  :  1390-1391
+TEXT       [ */alert('hi');]  :  1391-1406
+TAGBEGIN   [</script]  :  1406-1414
+TAGEND     [>]  :  1414-1415
+TEXT       [\n]  :  1415-1417
+TAGBEGIN   [<script]  :  1417-1424
+TAGEND     [>]  :  1424-1425
+UNESCAPED  [<!--/* ]  :  1425-1432
+TAGBEGIN   [</script]  :  1432-1440
+TAGEND     [>]  :  1440-1441
+TEXT       [ */alert('hi');-->]  :  1441-1459
+TAGBEGIN   [</script]  :  1459-1467
+TAGEND     [>]  :  1467-1468
+TEXT       [\n\n]  :  1468-1472
+TAGBEGIN   [<xmp]  :  1472-1476
+ATTRNAME   [style]  :  1477-1482
+ATTRVALUE  [color:blue]  :  1483-1493
+TAGEND     [>]  :  1493-1494
+UNESCAPED  [<!--/* ]  :  1494-1501
+TAGBEGIN   [</xmp]  :  1501-1506
+TAGEND     [>]  :  1506-1507
+TEXT       [ */alert('hi');-->]  :  1507-1525
+TAGBEGIN   [</xmp]  :  1525-1530
+TAGEND     [>]  :  1530-1531
+TEXT       [\n\n]  :  1531-1535
+TAGBEGIN   [<style]  :  1535-1541
+TAGEND     [>]  :  1541-1542
+UNESCAPED  [<!-- p { contentf: ']  :  1542-1562
+TAGBEGIN   [</style]  :  1562-1569
+TAGEND     [>]  :  1569-1570
+TEXT       [' } -->]  :  1570-1577
+TAGBEGIN   [</style]  :  1577-1584
+TAGEND     [>]  :  1584-1585
+TEXT       [\n\n]  :  1585-1589
+TAGBEGIN   [<style]  :  1589-1595
+TAGEND     [>]  :  1595-1596
+UNESCAPED  [Foo<!-- > ]  :  1596-1606
+TAGBEGIN   [</style]  :  1606-1613
+TAGEND     [>]  :  1613-1614
+TEXT       [ -->]  :  1614-1618
+TAGBEGIN   [</style]  :  1618-1625
+TAGEND     [>]  :  1625-1626
+TEXT       [\n\n]  :  1626-1630
+TAGBEGIN   [<textarea]  :  1630-1639
+TAGEND     [>]  :  1639-1640
+TEXT       [<!-- Zoicks ]  :  1640-1652
+TAGBEGIN   [</textarea]  :  1652-1662
+TAGEND     [>]  :  1662-1663
+TEXT       [-->]  :  1663-1666
+TAGBEGIN   [</textarea]  :  1666-1676
+TAGEND     [>]  :  1676-1677
+TEXT       [\n\n]  :  1677-1681
+COMMENT    [<!-- An escaping text span start may share its U+002D HYPHEN-MINUS characters\n   - with its corresponding escaping text span end. -->]  :  1681-1815
+TEXT       [\n]  :  1815-1817
+TAGBEGIN   [<script]  :  1817-1824
+TAGEND     [>]  :  1824-1825
+UNESCAPED  [<!-->]  :  1825-1830
+TAGBEGIN   [</script]  :  1830-1838
+TAGEND     [>]  :  1838-1839
+TEXT       [\n]  :  1839-1841
+TAGBEGIN   [<script]  :  1841-1848
+TAGEND     [>]  :  1848-1849
+UNESCAPED  [<!--->]  :  1849-1855
+TAGBEGIN   [</script]  :  1855-1863
+TAGEND     [>]  :  1863-1864
+TEXT       [\n]  :  1864-1866
+TAGBEGIN   [<script]  :  1866-1873
+TAGEND     [>]  :  1873-1874
+UNESCAPED  [<!---->]  :  1874-1881
+TAGBEGIN   [</script]  :  1881-1889
+TAGEND     [>]  :  1889-1890
+TEXT       [\n\n]  :  1890-1894
+TAGBEGIN   [</body]  :  1894-1900
+TAGEND     [>]  :  1900-1901
+TEXT       [\n]  :  1901-1903
+TAGBEGIN   [</html]  :  1903-1909
+TAGEND     [>]  :  1909-1910
+TEXT       [\n\n]  :  1910-1914
+DIRECTIVE  [<![CDATA[ No such thing as a CDATA>]  :  1914-1949
+TEXT       [ section in HTML ]]>\n]  :  1949-1971
+TAGBEGIN   [<script]  :  1971-1978
+TAGEND     [>]  :  1978-1979
+UNESCAPED  [a<b]  :  1979-1982
+TAGBEGIN   [</script]  :  1982-1990
+TAGEND     [>]  :  1990-1991
+TEXT       [\n\n]  :  1991-1995
+TAGBEGIN   [<img]  :  1995-1999
+ATTRNAME   [src]  :  2000-2003
+ATTRVALUE  [foo.gif]  :  2004-2011
+TAGEND     [/>]  :  2012-2014
+TAGBEGIN   [<a]  :  2014-2016
+ATTRNAME   [href]  :  2017-2021
+ATTRVALUE  []  :  2022-2022
+TAGEND     [>]  :  2022-2023
+TAGBEGIN   [<a]  :  2023-2025
+ATTRNAME   [href]  :  2026-2030
+ATTRVALUE  []  :  2031-2031
+TAGEND     [/>]  :  2031-2033
+TEXT       [\n\n]  :  2033-2037
+TAGBEGIN   [<span]  :  2037-2042
+ATTRNAME   [title]  :  2043-2048
+ATTRVALUE  [malformed attribs']  :  2049-2067
+ATTRNAME   [do]  :  2068-2070
+ATTRVALUE  [don't]  :  2071-2076
+ATTRNAME   [id]  :  2077-2079
+ATTRVALUE  [foo]  :  2080-2083
+ATTRNAME   [checked]  :  2084-2091
+ATTRNAME   [onclick]  :  2092-2099
+ATTRVALUE  ["a<b"]  :  2100-2105
+TAGEND     [>]  :  2105-2106
+TEXT       [Bar]  :  2106-2109
+TAGBEGIN   [</span]  :  2109-2115
+TAGEND     [>]  :  2115-2116
+TEXT       [\n]  :  2116-2118
