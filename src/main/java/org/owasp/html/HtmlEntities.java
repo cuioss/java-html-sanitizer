@@ -30,8 +30,6 @@ package org.owasp.html;
 
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Utilities for decoding HTML entities, e.g., {@code &amp;}.
  */
@@ -43,7 +41,7 @@ final class HtmlEntities {
   private static final int LONGEST_ENTITY_NAME;
 
   static {
-    final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+    final MapBuilder<String, String> builder = new MapBuilder<>();
 
     // Source data: https://html.spec.whatwg.org/multipage/named-characters.html
 
@@ -2173,7 +2171,7 @@ final class HtmlEntities {
     builder.put("zwj", "\u200d");
     builder.put("zwnj", "\u200c");
 
-    final Map<String, String> entityNameToCodePointMap = builder.build();
+    final Map<String, String> entityNameToCodePointMap = builder.toImmutableMap();
 
     int longestEntityName = 0;
     for (String entityName : entityNameToCodePointMap.keySet()) {

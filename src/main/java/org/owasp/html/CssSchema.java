@@ -28,17 +28,17 @@
 
 package org.owasp.html;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /** Describes the kinds of tokens a CSS property's value can safely contain. */
 @TCB
@@ -54,11 +54,11 @@ public final class CssSchema {
     /** A bitfield of BIT_* constants describing groups of allowed tokens. */
     final int bits;
     /** Specific allowed values. */
-    final ImmutableSet<String> literals;
+    final Set<String> literals;
     /**
      * Maps lower-case function tokens to the schema key for their parameters.
      */
-    final ImmutableMap<String, String> fnKeys;
+    final Map<String, String> fnKeys;
 
     /**
      * @param bits A bitfield of BIT_* constants describing groups of allowed tokens.
@@ -66,8 +66,8 @@ public final class CssSchema {
      * @param fnKeys Maps lower-case function tokens to the schema key for their parameters.
      */
     public Property(
-        int bits, ImmutableSet<String> literals,
-        ImmutableMap<String, String> fnKeys) {
+        int bits, Set<String> literals,
+        Map<String, String> fnKeys) {
       this.bits = bits;
       this.literals = literals;
       this.fnKeys = fnKeys;
@@ -125,11 +125,11 @@ public final class CssSchema {
   static final int BIT_UNICODE_RANGE = 128;
 
   static final Property DISALLOWED = new Property(
-      0, ImmutableSet.<String>of(), ImmutableMap.<String, String>of());
+      0, Collections.emptySet(), Collections.emptyMap());
 
-  private final ImmutableMap<String, Property> properties;
+  private final Map<String, Property> properties;
 
-  private CssSchema(ImmutableMap<String, Property> properties) {
+  private CssSchema(Map<String, Property> properties) {
     if (properties == null) { throw new NullPointerException(); }
     this.properties = properties;
   }
@@ -144,14 +144,14 @@ public final class CssSchema {
    */
   public static CssSchema withProperties(
       Iterable<? extends String> propertyNames) {
-    ImmutableMap.Builder<String, Property> propertiesBuilder =
-        ImmutableMap.builder();
+    Map<String, Property> propertiesBuilder =
+        new HashMap<>();
     for (String propertyName : propertyNames) {
       Property prop = DEFINITIONS.get(propertyName);
       if (prop == null) { throw new IllegalArgumentException(propertyName); }
       propertiesBuilder.put(propertyName, prop);
     }
-    return new CssSchema(propertiesBuilder.build());
+    return new CssSchema(Collections.unmodifiableMap(propertiesBuilder));
   }
 
   /**
@@ -161,8 +161,8 @@ public final class CssSchema {
    */
   public static CssSchema withProperties(
       Map<? extends String, ? extends Property> properties) {
-    ImmutableMap<String, Property> propertyMap =
-        ImmutableMap.copyOf(properties);
+    Map<String, Property> propertyMap =
+        Collections.unmodifiableMap(new HashMap<>(properties));
     // check that all fnKeys are defined in properties.
     for (Map.Entry<String, Property> e : propertyMap.entrySet()) {
       Property property = e.getValue();
@@ -187,13 +187,13 @@ public final class CssSchema {
    */
   public static CssSchema union(CssSchema... cssSchemas) {
     if (cssSchemas.length == 1) { return cssSchemas[0]; }
-    Map<String, Property> properties = Maps.newLinkedHashMap();
+    Map<String, Property> properties = new HashMap<>();
     for (CssSchema cssSchema : cssSchemas) {
       for (Map.Entry<String, Property> e : cssSchema.properties.entrySet()) {
         String name = e.getKey();
         Property newProp = e.getValue();
-        Preconditions.checkNotNull(name);
-        Preconditions.checkNotNull(newProp);
+        requireNonNull(name);
+        requireNonNull(newProp);
         Property oldProp = properties.put(name, newProp);
         if (oldProp != null && !oldProp.equals(newProp)) {
           throw new IllegalArgumentException(
@@ -201,7 +201,7 @@ public final class CssSchema {
         }
       }
     }
-    return new CssSchema(ImmutableMap.copyOf(properties));
+    return new CssSchema(Collections.unmodifiableMap(new HashMap<>(properties)));
   }
 
   /**
@@ -252,14 +252,13 @@ public final class CssSchema {
   }
 
   /** Maps lower-cased CSS property names to information about them. */
-  static final ImmutableMap<String, Property> DEFINITIONS;
+  static final Map<String, Property> DEFINITIONS;
   static {
-    ImmutableMap<String, String> zeroFns = ImmutableMap.of();
-    ImmutableMap.Builder<String, Property> builder
-        = ImmutableMap.builder();
-    ImmutableSet<String> mozBorderRadiusLiterals0 = ImmutableSet.of("/");
-    ImmutableSet<String> mozOpacityLiterals0 = ImmutableSet.of("inherit");
-    ImmutableSet<String> mozOutlineLiterals0 = ImmutableSet.of(
+    Map<String, String> zeroFns = Collections.emptyMap();
+    MapBuilder<String, Property> builder = new MapBuilder<>();
+    Set<String> mozBorderRadiusLiterals0 = CollectionHelper.immutableSet("/");
+    Set<String> mozOpacityLiterals0 = CollectionHelper.immutableSet("inherit");
+    Set<String> mozOutlineLiterals0 = CollectionHelper.immutableSet(
         "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige",
         "bisque", "black", "blanchedalmond", "blue", "blueviolet", "brown",
         "burlywood", "cadetblue", "chartreuse", "chocolate", "coral",
@@ -287,119 +286,122 @@ public final class CssSchema {
         "silver", "skyblue", "slateblue", "slategray", "snow", "springgreen",
         "steelblue", "tan", "teal", "thistle", "tomato", "turquoise", "violet",
         "wheat", "white", "whitesmoke", "yellow", "yellowgreen");
-    ImmutableSet<String> mozOutlineLiterals1 = ImmutableSet.of(
+    Set<String> mozOutlineLiterals1 = CollectionHelper.immutableSet(
         "dashed", "dotted", "double", "groove", "outset", "ridge", "solid");
-    ImmutableSet<String> mozOutlineLiterals2 = ImmutableSet.of("thick", "thin");
-    ImmutableSet<String> mozOutlineLiterals3 = ImmutableSet.of(
+    Set<String> mozOutlineLiterals2 = CollectionHelper.immutableSet("thick", "thin");
+    Set<String> mozOutlineLiterals3 = CollectionHelper.immutableSet(
         "hidden", "inherit", "inset", "invert", "medium", "none");
-    ImmutableMap<String, String> mozOutlineFunctions =
-      ImmutableMap.<String, String>of("rgb(", "rgb()", "rgba(", "rgba()");
-    ImmutableSet<String> mozOutlineColorLiterals0 =
-      ImmutableSet.of("inherit", "invert");
-    ImmutableSet<String> mozOutlineStyleLiterals0 =
-      ImmutableSet.of("hidden", "inherit", "inset", "none");
-    ImmutableSet<String> mozOutlineWidthLiterals0 =
-      ImmutableSet.of("inherit", "medium");
-    ImmutableSet<String> oTextOverflowLiterals0 =
-      ImmutableSet.of("clip", "ellipsis");
-    ImmutableSet<String> azimuthLiterals0 = ImmutableSet.of(
+    Map<String, String> mozOutlineFunctions =
+      CollectionHelper.immutableMap("rgb(", "rgb()", "rgba(", "rgba()");
+    Set<String> mozOutlineColorLiterals0 =
+      CollectionHelper.immutableSet("inherit", "invert");
+    Set<String> mozOutlineStyleLiterals0 =
+      CollectionHelper.immutableSet("hidden", "inherit", "inset", "none");
+    Set<String> mozOutlineWidthLiterals0 =
+      CollectionHelper.immutableSet("inherit", "medium");
+    Set<String> oTextOverflowLiterals0 =
+      CollectionHelper.immutableSet("clip", "ellipsis");
+    Set<String> azimuthLiterals0 = CollectionHelper.immutableSet(
         "behind", "center-left", "center-right", "far-left", "far-right",
         "left-side", "leftwards", "right-side", "rightwards");
-    ImmutableSet<String> azimuthLiterals1 = ImmutableSet.of("left", "right");
-    ImmutableSet<String> azimuthLiterals2 =
-      ImmutableSet.of("center", "inherit");
-    ImmutableSet<String> backgroundLiterals0 = ImmutableSet.of(
+    Set<String> azimuthLiterals1 = CollectionHelper.immutableSet("left", "right");
+    Set<String> azimuthLiterals2 =
+      CollectionHelper.immutableSet("center", "inherit");
+    Set<String> backgroundLiterals0 = CollectionHelper.immutableSet(
         "border-box", "contain", "content-box", "cover", "padding-box");
-    ImmutableSet<String> backgroundLiterals1 =
-      ImmutableSet.of("no-repeat", "repeat-x", "repeat-y", "round", "space");
-    ImmutableSet<String> backgroundLiterals2 = ImmutableSet.of("bottom", "top");
-    ImmutableSet<String> backgroundLiterals3 = ImmutableSet.of(
+    Set<String> backgroundLiterals1 =
+      CollectionHelper.immutableSet("no-repeat", "repeat-x", "repeat-y", "round", "space");
+    Set<String> backgroundLiterals2 = CollectionHelper.immutableSet("bottom", "top");
+    Set<String> backgroundLiterals3 = CollectionHelper.immutableSet(
         ",", "/", "auto", "center", "fixed", "inherit", "local", "none",
         "repeat", "scroll", "transparent");
-    ImmutableMap<String, String> backgroundFunctions =
-      ImmutableMap.<String, String>builder()
-      .put("image(", "image()")
-      .put("linear-gradient(", "linear-gradient()")
-      .put("radial-gradient(", "radial-gradient()")
-      .put("repeating-linear-gradient(", "repeating-linear-gradient()")
-      .put("repeating-radial-gradient(", "repeating-radial-gradient()")
-      .put("rgb(", "rgb()").put("rgba(", "rgba()")
-      .build();
-    ImmutableSet<String> backgroundAttachmentLiterals0 =
-      ImmutableSet.of(",", "fixed", "local", "scroll");
-    ImmutableSet<String> backgroundColorLiterals0 =
-      ImmutableSet.of("inherit", "transparent");
-    ImmutableSet<String> backgroundImageLiterals0 =
-      ImmutableSet.of(",", "none");
-    ImmutableMap<String, String> backgroundImageFunctions =
-      ImmutableMap.<String, String>of(
+    MapBuilder<String, String> backgroundFunctionsBuilder = new MapBuilder<>();
+    
+
+    backgroundFunctionsBuilder.put("image(", "image()");
+    backgroundFunctionsBuilder.put("linear-gradient(", "linear-gradient()");
+    backgroundFunctionsBuilder.put("radial-gradient(", "radial-gradient()");
+    backgroundFunctionsBuilder.put("repeating-linear-gradient(", "repeating-linear-gradient()");
+    backgroundFunctionsBuilder.put("repeating-radial-gradient(", "repeating-radial-gradient()");
+    backgroundFunctionsBuilder .put("rgb(", "rgb()");backgroundFunctionsBuilder.put("rgba(", "rgba()");
+    
+    Map<String, String> backgroundFunctions = backgroundFunctionsBuilder.toImmutableMap();
+    
+    Set<String> backgroundAttachmentLiterals0 =
+      CollectionHelper.immutableSet(",", "fixed", "local", "scroll");
+    Set<String> backgroundColorLiterals0 =
+      CollectionHelper.immutableSet("inherit", "transparent");
+    Set<String> backgroundImageLiterals0 =
+      CollectionHelper.immutableSet(",", "none");
+    Map<String, String> backgroundImageFunctions =
+     CollectionHelper.immutableMap(
           "image(", "image()",
           "linear-gradient(", "linear-gradient()",
           "radial-gradient(", "radial-gradient()",
           "repeating-linear-gradient(", "repeating-linear-gradient()",
           "repeating-radial-gradient(", "repeating-radial-gradient()");
-    ImmutableSet<String> backgroundPositionLiterals0 = ImmutableSet.of(
+    Set<String> backgroundPositionLiterals0 = CollectionHelper.immutableSet(
         ",", "center");
-    ImmutableSet<String> backgroundRepeatLiterals0 = ImmutableSet.of(
+    Set<String> backgroundRepeatLiterals0 = CollectionHelper.immutableSet(
         ",", "repeat");
-    ImmutableSet<String> borderLiterals0 = ImmutableSet.of(
+    Set<String> borderLiterals0 = CollectionHelper.immutableSet(
         "hidden", "inherit", "inset", "medium", "none", "transparent");
-    ImmutableSet<String> borderCollapseLiterals0 = ImmutableSet.of(
+    Set<String> borderCollapseLiterals0 = CollectionHelper.immutableSet(
         "collapse", "inherit", "separate");
-    ImmutableSet<String> bottomLiterals0 = ImmutableSet.of("auto", "inherit");
-    ImmutableSet<String> boxShadowLiterals0 = ImmutableSet.of(
+    Set<String> bottomLiterals0 = CollectionHelper.immutableSet("auto", "inherit");
+    Set<String> boxShadowLiterals0 = CollectionHelper.immutableSet(
         ",", "inset", "none");
-    ImmutableSet<String> clearLiterals0 = ImmutableSet.of(
+    Set<String> clearLiterals0 = CollectionHelper.immutableSet(
         "both", "inherit", "none");
-    ImmutableMap<String, String> clipFunctions =
-        ImmutableMap.<String, String>of("rect(", "rect()");
-    ImmutableSet<String> contentLiterals0 = ImmutableSet.of("none", "normal");
-    ImmutableSet<String> cueLiterals0 = ImmutableSet.of("inherit", "none");
-    ImmutableSet<String> cursorLiterals0 = ImmutableSet.of(
+    Map<String, String> clipFunctions =
+        CollectionHelper.immutableMap("rect(", "rect()");
+    Set<String> contentLiterals0 = CollectionHelper.immutableSet("none", "normal");
+    Set<String> cueLiterals0 = CollectionHelper.immutableSet("inherit", "none");
+    Set<String> cursorLiterals0 = CollectionHelper.immutableSet(
         "all-scroll", "col-resize", "crosshair", "default", "e-resize",
         "hand", "help", "move", "n-resize", "ne-resize", "no-drop",
         "not-allowed", "nw-resize", "pointer", "progress", "row-resize",
         "s-resize", "se-resize", "sw-resize", "text", "vertical-text",
         "w-resize", "wait");
-    ImmutableSet<String> cursorLiterals1 = ImmutableSet.of(
+    Set<String> cursorLiterals1 = CollectionHelper.immutableSet(
         ",", "auto", "inherit");
-    ImmutableSet<String> directionLiterals0 = ImmutableSet.of("ltr", "rtl");
-    ImmutableSet<String> displayLiterals0 = ImmutableSet.of(
+    Set<String> directionLiterals0 = CollectionHelper.immutableSet("ltr", "rtl");
+    Set<String> displayLiterals0 = CollectionHelper.immutableSet(
         "-moz-inline-box", "-moz-inline-stack", "block", "inline",
         "inline-block", "inline-table", "list-item", "run-in", "table",
         "table-caption", "table-cell", "table-column", "table-column-group",
         "table-footer-group", "table-header-group", "table-row",
         "table-row-group");
-    ImmutableSet<String> elevationLiterals0 = ImmutableSet.of(
+    Set<String> elevationLiterals0 = CollectionHelper.immutableSet(
         "above", "below", "higher", "level", "lower");
-    ImmutableSet<String> emptyCellsLiterals0 = ImmutableSet.of("hide", "show");
+    Set<String> emptyCellsLiterals0 = CollectionHelper.immutableSet("hide", "show");
     //ImmutableMap<String, String> filterFunctions =
     //  ImmutableMap.<String, String>of("alpha(", "alpha()");
-    ImmutableSet<String> fontLiterals0 = ImmutableSet.of(
+    Set<String> fontLiterals0 = CollectionHelper.immutableSet(
         "100", "200", "300", "400", "500", "600", "700", "800", "900", "bold",
         "bolder", "lighter");
-    ImmutableSet<String> fontLiterals1 = ImmutableSet.of(
+    Set<String> fontLiterals1 = CollectionHelper.immutableSet(
         "large", "larger", "small", "smaller", "x-large", "x-small",
         "xx-large", "xx-small");
-    ImmutableSet<String> fontLiterals2 = ImmutableSet.of(
+    Set<String> fontLiterals2 = CollectionHelper.immutableSet(
         "caption", "icon", "menu", "message-box", "small-caption",
         "status-bar");
-    ImmutableSet<String> fontLiterals3 = ImmutableSet.of(
+    Set<String> fontLiterals3 = CollectionHelper.immutableSet(
         "cursive", "fantasy", "monospace", "sans-serif", "serif");
-    ImmutableSet<String> fontLiterals4 = ImmutableSet.of("italic", "oblique");
-    ImmutableSet<String> fontLiterals5 = ImmutableSet.of(
+    Set<String> fontLiterals4 = CollectionHelper.immutableSet("italic", "oblique");
+    Set<String> fontLiterals5 = CollectionHelper.immutableSet(
         ",", "/", "inherit", "medium", "normal", "small-caps");
-    ImmutableSet<String> fontFamilyLiterals0 = ImmutableSet.of(",", "inherit");
-    ImmutableSet<String> fontStretchLiterals0 = ImmutableSet.of(
+    Set<String> fontFamilyLiterals0 = CollectionHelper.immutableSet(",", "inherit");
+    Set<String> fontStretchLiterals0 = CollectionHelper.immutableSet(
         "condensed", "expanded", "extra-condensed", "extra-expanded",
         "narrower", "semi-condensed", "semi-expanded", "ultra-condensed",
         "ultra-expanded", "wider");
-    ImmutableSet<String> fontStretchLiterals1 = ImmutableSet.of("normal");
-    ImmutableSet<String> fontStyleLiterals0 = ImmutableSet.of(
+    Set<String> fontStretchLiterals1 = CollectionHelper.immutableSet("normal");
+    Set<String> fontStyleLiterals0 = CollectionHelper.immutableSet(
         "inherit", "normal");
-    ImmutableSet<String> fontVariantLiterals0 = ImmutableSet.of(
+    Set<String> fontVariantLiterals0 = CollectionHelper.immutableSet(
         "inherit", "normal", "small-caps");
-    ImmutableSet<String> listStyleLiterals0 = ImmutableSet.of(
+    Set<String> listStyleLiterals0 = CollectionHelper.immutableSet(
         "armenian", "cjk-decimal", "decimal", "decimal-leading-zero", "disc",
         "disclosure-closed", "disclosure-open", "ethiopic-numeric", "georgian",
         "hebrew", "hiragana", "hiragana-iroha", "japanese-formal",
@@ -409,78 +411,78 @@ public final class CssSchema {
         "lower-roman", "simp-chinese-formal", "simp-chinese-informal",
         "square", "trad-chinese-formal", "trad-chinese-informal",
         "upper-alpha", "upper-latin", "upper-roman");
-    ImmutableSet<String> listStyleLiterals1 = ImmutableSet.of(
+    Set<String> listStyleLiterals1 = CollectionHelper.immutableSet(
         "inside", "outside");
-    ImmutableSet<String> listStyleLiterals2 = ImmutableSet.of(
+    Set<String> listStyleLiterals2 = CollectionHelper.immutableSet(
         "circle", "inherit", "none");
-    ImmutableSet<String> maxHeightLiterals0 = ImmutableSet.of(
+    Set<String> maxHeightLiterals0 = CollectionHelper.immutableSet(
         "auto", "inherit", "none");
-    ImmutableSet<String> overflowLiterals0 = ImmutableSet.of(
+    Set<String> overflowLiterals0 = CollectionHelper.immutableSet(
         "auto", "hidden", "inherit", "scroll", "visible");
-    ImmutableSet<String> overflowXLiterals0 = ImmutableSet.of(
+    Set<String> overflowXLiterals0 = CollectionHelper.immutableSet(
         "no-content", "no-display");
-    ImmutableSet<String> overflowXLiterals1 = ImmutableSet.of(
+    Set<String> overflowXLiterals1 = CollectionHelper.immutableSet(
         "auto", "hidden", "scroll", "visible");
-    ImmutableSet<String> pageBreakAfterLiterals0 = ImmutableSet.of(
+    Set<String> pageBreakAfterLiterals0 = CollectionHelper.immutableSet(
         "always", "auto", "avoid", "inherit");
-    ImmutableSet<String> pageBreakInsideLiterals0 = ImmutableSet.of(
+    Set<String> pageBreakInsideLiterals0 = CollectionHelper.immutableSet(
         "auto", "avoid", "inherit");
-    ImmutableSet<String> pitchLiterals0 = ImmutableSet.of(
+    Set<String> pitchLiterals0 = CollectionHelper.immutableSet(
         "high", "low", "x-high", "x-low");
-    ImmutableSet<String> playDuringLiterals0 = ImmutableSet.of(
+    Set<String> playDuringLiterals0 = CollectionHelper.immutableSet(
         "auto", "inherit", "mix", "none", "repeat");
-    ImmutableSet<String> positionLiterals0 = ImmutableSet.of(
+    Set<String> positionLiterals0 = CollectionHelper.immutableSet(
         "absolute", "relative", "static");
-    ImmutableSet<String> speakLiterals0 = ImmutableSet.of(
+    Set<String> speakLiterals0 = CollectionHelper.immutableSet(
         "inherit", "none", "normal", "spell-out");
-    ImmutableSet<String> speakHeaderLiterals0 = ImmutableSet.of(
+    Set<String> speakHeaderLiterals0 = CollectionHelper.immutableSet(
         "always", "inherit", "once");
-    ImmutableSet<String> speakNumeralLiterals0 = ImmutableSet.of(
+    Set<String> speakNumeralLiterals0 = CollectionHelper.immutableSet(
         "continuous", "digits");
-    ImmutableSet<String> speakPunctuationLiterals0 = ImmutableSet.of(
+    Set<String> speakPunctuationLiterals0 = CollectionHelper.immutableSet(
         "code", "inherit", "none");
-    ImmutableSet<String> speechRateLiterals0 = ImmutableSet.of(
+    Set<String> speechRateLiterals0 = CollectionHelper.immutableSet(
         "fast", "faster", "slow", "slower", "x-fast", "x-slow");
-    ImmutableSet<String> tableLayoutLiterals0 = ImmutableSet.of(
+    Set<String> tableLayoutLiterals0 = CollectionHelper.immutableSet(
         "auto", "fixed", "inherit");
-    ImmutableSet<String> textAlignLiterals0 = ImmutableSet.of(
+    Set<String> textAlignLiterals0 = CollectionHelper.immutableSet(
         "center", "inherit", "justify");
-    ImmutableSet<String> textDecorationLiterals0 = ImmutableSet.of(
+    Set<String> textDecorationLiterals0 = CollectionHelper.immutableSet(
         "blink", "line-through", "overline", "underline");
-    ImmutableSet<String> textTransformLiterals0 = ImmutableSet.of(
+    Set<String> textTransformLiterals0 = CollectionHelper.immutableSet(
         "capitalize", "lowercase", "uppercase");
-    ImmutableSet<String> textWrapLiterals0 = ImmutableSet.of(
+    Set<String> textWrapLiterals0 = CollectionHelper.immutableSet(
         "suppress", "unrestricted");
-    ImmutableSet<String> unicodeBidiLiterals0 = ImmutableSet.of(
+    Set<String> unicodeBidiLiterals0 = CollectionHelper.immutableSet(
         "bidi-override", "embed");
-    ImmutableSet<String> verticalAlignLiterals0 = ImmutableSet.of(
+    Set<String> verticalAlignLiterals0 = CollectionHelper.immutableSet(
         "baseline", "middle", "sub", "super", "text-bottom", "text-top");
-    ImmutableSet<String> visibilityLiterals0 = ImmutableSet.of(
+    Set<String> visibilityLiterals0 = CollectionHelper.immutableSet(
         "collapse", "hidden", "inherit", "visible");
-    ImmutableSet<String> voiceFamilyLiterals0 = ImmutableSet.of(
+    Set<String> voiceFamilyLiterals0 = CollectionHelper.immutableSet(
         "child", "female", "male");
-    ImmutableSet<String> volumeLiterals0 = ImmutableSet.of(
+    Set<String> volumeLiterals0 = CollectionHelper.immutableSet(
         "loud", "silent", "soft", "x-loud", "x-soft");
-    ImmutableSet<String> whiteSpaceLiterals0 = ImmutableSet.of(
+    Set<String> whiteSpaceLiterals0 = CollectionHelper.immutableSet(
         "-moz-pre-wrap", "-o-pre-wrap", "-pre-wrap", "nowrap", "pre",
         "pre-line", "pre-wrap");
-    ImmutableSet<String> wordWrapLiterals0 = ImmutableSet.of(
+    Set<String> wordWrapLiterals0 = CollectionHelper.immutableSet(
         "break-word", "normal");
-    ImmutableSet<String> rgb$FunLiterals0 = ImmutableSet.of(",");
-    ImmutableSet<String> linearGradient$FunLiterals0 = ImmutableSet.of(
+    Set<String> rgb$FunLiterals0 = CollectionHelper.immutableSet(",");
+    Set<String> linearGradient$FunLiterals0 = CollectionHelper.immutableSet(
         ",", "to");
-    ImmutableSet<String> radialGradient$FunLiterals0 = ImmutableSet.of(
+    Set<String> radialGradient$FunLiterals0 = CollectionHelper.immutableSet(
         "at", "closest-corner", "closest-side", "ellipse", "farthest-corner",
         "farthest-side");
-    ImmutableSet<String> radialGradient$FunLiterals1 = ImmutableSet.of(
+    Set<String> radialGradient$FunLiterals1 = CollectionHelper.immutableSet(
         ",", "center", "circle");
-    ImmutableSet<String> rect$FunLiterals0 = ImmutableSet.of(",", "auto");
-    //ImmutableSet<String> alpha$FunLiterals0 = ImmutableSet.of("=", "opacity");
+    Set<String> rect$FunLiterals0 = CollectionHelper.immutableSet(",", "auto");
+    //Set<String> alpha$FunLiterals0 = CollectionHelper.immutableSet("=", "opacity");
     Property mozBorderRadius =
        new Property(5, mozBorderRadiusLiterals0, zeroFns);
     builder.put("-moz-border-radius", mozBorderRadius);
     Property mozBorderRadiusBottomleft =
-       new Property(5, ImmutableSet.<String>of(), zeroFns);
+       new Property(5, CollectionHelper.immutableSet(), zeroFns);
     builder.put("-moz-border-radius-bottomleft", mozBorderRadiusBottomleft);
     Property mozOpacity = new Property(1, mozOpacityLiterals0, zeroFns);
     builder.put("-moz-opacity", mozOpacity);
@@ -838,19 +840,19 @@ public final class CssSchema {
     builder.put("rgba()", rgb$Fun);
     builder.put("repeating-linear-gradient()", linearGradient$Fun);
     builder.put("repeating-radial-gradient()", radialGradient$Fun);
-    DEFINITIONS = builder.build();
+    DEFINITIONS = builder.toImmutableMap();
   }
 
-  private static <T> ImmutableSet<T> union(
-      @SuppressWarnings("unchecked") ImmutableSet<T>... subsets) {
-    ImmutableSet.Builder<T> all = ImmutableSet.builder();
-    for (ImmutableSet<T> subset : subsets) {
+  private static <T> Set<T> union(
+      @SuppressWarnings("unchecked") Set<T>... subsets) {
+    Set<T> all = CollectionHelper.mutableSet();
+    for (Set<T> subset : subsets) {
       all.addAll(subset);
     }
-    return all.build();
+    return CollectionHelper.immutableSet(all);
   }
 
-  static final ImmutableSet<String> DEFAULT_WHITELIST = ImmutableSet.of(
+  static final Set<String> DEFAULT_WHITELIST = CollectionHelper.immutableSet(
       "-moz-border-radius",
       "-moz-border-radius-bottomleft",
       "-moz-border-radius-bottomright",
@@ -995,10 +997,10 @@ public final class CssSchema {
 
   /** Dumps key and literal list to stdout for easy examination. */
   public static void main(String... argv) {
-    SortedSet<String> keys = Sets.newTreeSet();
-    SortedSet<String> literals = Sets.newTreeSet();
+    SortedSet<String> keys = new TreeSet<>();
+    SortedSet<String> literals = new TreeSet<>();
 
-    for (ImmutableMap.Entry<String, Property> e : DEFINITIONS.entrySet()) {
+    for (Entry<String, Property> e : DEFINITIONS.entrySet()) {
       keys.add(e.getKey());
       literals.addAll(e.getValue().literals);
     }

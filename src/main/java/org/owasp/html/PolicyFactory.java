@@ -28,16 +28,16 @@
 
 package org.owasp.html;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
-
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * A factory that can be used to link a sanitizer to an output receiver and that
@@ -53,16 +53,16 @@ import com.google.common.collect.ImmutableSet;
 public final class PolicyFactory
     implements Function<HtmlStreamEventReceiver, HtmlSanitizer.Policy> {
 
-  private final ImmutableMap<String, ElementAndAttributePolicies> policies;
-  private final ImmutableMap<String, AttributePolicy> globalAttrPolicies;
-  private final ImmutableSet<String> textContainers;
+  private final Map<String, ElementAndAttributePolicies> policies;
+  private final Map<String, AttributePolicy> globalAttrPolicies;
+  private final Set<String> textContainers;
   private final HtmlStreamEventProcessor preprocessor;
   private final HtmlStreamEventProcessor postprocessor;
 
   PolicyFactory(
-      ImmutableMap<String, ElementAndAttributePolicies> policies,
-      ImmutableSet<String> textContainers,
-      ImmutableMap<String, AttributePolicy> globalAttrPolicies,
+      Map<String, ElementAndAttributePolicies> policies,
+      Set<String> textContainers,
+      Map<String, AttributePolicy> globalAttrPolicies,
       HtmlStreamEventProcessor preprocessor,
       HtmlStreamEventProcessor postprocessor) {
     this.policies = policies;
@@ -140,8 +140,8 @@ public final class PolicyFactory
    * name.
    */
   public PolicyFactory and(PolicyFactory f) {
-    ImmutableMap.Builder<String, ElementAndAttributePolicies> b
-        = ImmutableMap.builder();
+    MapBuilder<String, ElementAndAttributePolicies> b
+        = new MapBuilder<>();
     // Merge this and f into a map of element names to attribute policies.
     for (Map.Entry<String, ElementAndAttributePolicies> e
         : policies.entrySet()) {
@@ -167,24 +167,24 @@ public final class PolicyFactory
         b.put(elName, p);
       }
     }
-    ImmutableSet<String> allTextContainers;
+    Set<String> allTextContainers;
     if (this.textContainers.containsAll(f.textContainers)) {
       allTextContainers = this.textContainers;
     } else if (f.textContainers.containsAll(this.textContainers)) {
       allTextContainers = f.textContainers;
     } else {
-      allTextContainers = ImmutableSet.<String>builder()
-        .addAll(this.textContainers)
-        .addAll(f.textContainers)
-        .build();
+        Set<String> builder = new HashSet<>();  
+      builder.addAll(this.textContainers);
+      builder.addAll(f.textContainers);
+      allTextContainers = Collections.unmodifiableSet(builder);
     }
-    ImmutableMap<String, AttributePolicy> allGlobalAttrPolicies;
+    Map<String, AttributePolicy> allGlobalAttrPolicies;
     if (f.globalAttrPolicies.isEmpty()) {
       allGlobalAttrPolicies = this.globalAttrPolicies;
     } else if (this.globalAttrPolicies.isEmpty()) {
       allGlobalAttrPolicies = f.globalAttrPolicies;
     } else {
-      ImmutableMap.Builder<String, AttributePolicy> ab = ImmutableMap.builder();
+      MapBuilder<String, AttributePolicy> ab = new MapBuilder<>();
       for (Map.Entry<String, AttributePolicy> e
           : this.globalAttrPolicies.entrySet()) {
         String attrName = e.getKey();
@@ -200,7 +200,7 @@ public final class PolicyFactory
           ab.put(attrName, e.getValue());
         }
       }
-      allGlobalAttrPolicies = ab.build();
+      allGlobalAttrPolicies = ab.toImmutableMap();
     }
     HtmlStreamEventProcessor compositionOfPreprocessors
         = HtmlStreamEventProcessor.Processors.compose(
@@ -209,7 +209,7 @@ public final class PolicyFactory
         = HtmlStreamEventProcessor.Processors.compose(
             this.postprocessor, f.postprocessor);
     return new PolicyFactory(
-        b.build(), allTextContainers, allGlobalAttrPolicies,
+        b.toImmutableMap(), allTextContainers, allGlobalAttrPolicies,
         compositionOfPreprocessors, compositionOfPostprocessors);
   }
 }

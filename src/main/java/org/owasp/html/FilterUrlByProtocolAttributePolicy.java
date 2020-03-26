@@ -28,9 +28,9 @@
 
 package org.owasp.html;
 
-import javax.annotation.Nullable;
+import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
+import javax.annotation.Nullable;
 
 /**
  * An attribute policy for attributes whose values are URLs that requires that
@@ -56,14 +56,14 @@ import com.google.common.collect.ImmutableSet;
  */
 @TCB
 public class FilterUrlByProtocolAttributePolicy implements AttributePolicy {
-  private final ImmutableSet<String> protocols;
+  private final Set<String> protocols;
 
   /**
    * @param protocols lower-case protocol names without any trailing colon (":")
    */
   public FilterUrlByProtocolAttributePolicy(
       Iterable<? extends String> protocols) {
-    this.protocols = ImmutableSet.copyOf(protocols);
+    this.protocols = CollectionHelper.immutableSet(protocols);
   }
 
   public @Nullable String apply(

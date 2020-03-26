@@ -35,8 +35,6 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
-
 /**
  * Given a string of CSS, produces a string of normalized CSS with certain
  * useful properties detailed below.
@@ -1443,7 +1441,7 @@ final class CssTokens implements Iterable<String> {
    *     http://dev.w3.org/csswg/css-values/#other-units
    */
   private static final Trie<Integer> UNIT_TRIE = new Trie<Integer>(
-      ImmutableMap.<String, Integer>builder()
+      new MapBuilder<String, Integer>()
         .put("em", LENGTH_UNIT_TYPE)
         .put("ex", LENGTH_UNIT_TYPE)
         .put("ch", LENGTH_UNIT_TYPE)  // Width of zero character
@@ -1469,7 +1467,7 @@ final class CssTokens implements Iterable<String> {
         .put("dpi", RESOLUTION_UNIT_TYPE)
         .put("dpcm", RESOLUTION_UNIT_TYPE)
         .put("dppx", RESOLUTION_UNIT_TYPE)
-        .build());
+        .toImmutableMap());
 
   static boolean isWellKnownUnit(CharSequence s, int start, int end) {
     if (start == end) { return false; }

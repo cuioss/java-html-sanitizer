@@ -29,15 +29,13 @@
 package org.owasp.html;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import org.owasp.html.Joinable.JoinHelper;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 /**
  * A policy that can be applied to an element to decide whether or not to
@@ -90,11 +88,11 @@ import com.google.common.collect.ImmutableList;
       }
 
       @Override
-      Optional<ImmutableList<ElementPolicy>> split(ElementPolicy x) {
+      Optional<List<ElementPolicy>> split(ElementPolicy x) {
         if (x instanceof JoinedElementPolicy) {
           return Optional.of(((JoinedElementPolicy) x).policies);
         }
-        return Optional.absent();
+        return Optional.empty();
       }
 
       @Override
@@ -129,10 +127,10 @@ import com.google.common.collect.ImmutableList;
 
 @Immutable
 final class JoinedElementPolicy implements ElementPolicy {
-  final ImmutableList<ElementPolicy> policies;
+  final List<ElementPolicy> policies;
 
   JoinedElementPolicy(Iterable<? extends ElementPolicy> policies) {
-    this.policies = ImmutableList.copyOf(policies);
+    this.policies = CollectionHelper.immutableList(policies);
   }
 
   public @Nullable String apply(String elementName, List<String> attrs) {

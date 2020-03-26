@@ -28,7 +28,7 @@
 
 package org.owasp.html;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /**
  * From section 8.1.2.6 of http://www.whatwg.org/specs/web-apps/current-work/
@@ -82,8 +82,8 @@ public enum HtmlTextEscapingMode {
   VOID,
   ;
 
-  private static final ImmutableMap<String, HtmlTextEscapingMode> ESCAPING_MODES
-      = ImmutableMap.<String, HtmlTextEscapingMode>builder()
+  private static final Map<String, HtmlTextEscapingMode> ESCAPING_MODES
+      = new MapBuilder<String, HtmlTextEscapingMode>()
       .put("iframe", CDATA)
       // HTML5 does not treat listing as CDATA and treats XMP as deprecated,
       // but HTML2 does at
@@ -132,7 +132,7 @@ public enum HtmlTextEscapingMode {
        // EMPTY per http://www.w3.org/TR/REC-html32#basefont
       .put("basefont", VOID)
       .put("isindex", VOID)
-      .build();
+      .toImmutableMap();
 
 
   /**

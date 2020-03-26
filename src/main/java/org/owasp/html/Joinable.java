@@ -1,14 +1,14 @@
 package org.owasp.html;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 /**
  * Something that can request special joining.
@@ -54,8 +54,8 @@ interface Joinable<T> {
         T identityValue) {
       this.baseType = baseType;
       this.specialJoinableType = specialJoinableType;
-      this.zeroValue = Preconditions.checkNotNull(zeroValue);
-      this.identityValue = Preconditions.checkNotNull(identityValue);
+      this.zeroValue = requireNonNull(zeroValue);
+      this.identityValue = requireNonNull(identityValue);
     }
 
     abstract Optional<? extends Iterable<? extends T>> split(T x);
@@ -76,17 +76,17 @@ interface Joinable<T> {
         JoinStrategy<SJ> strategy = sj.getJoinStrategy();
 
         if (requireSpecialJoining == null) {
-          requireSpecialJoining = Maps.newLinkedHashMap();
+          requireSpecialJoining = new LinkedHashMap<>();
         }
         Set<SJ> toJoinTogether = requireSpecialJoining.get(strategy);
         if (toJoinTogether == null) {
-          toJoinTogether = Sets.newLinkedHashSet();
+          toJoinTogether = new LinkedHashSet<>();
           requireSpecialJoining.put(strategy, toJoinTogether);
         }
 
         toJoinTogether.add(sj);
       } else {
-        uniq.add(Preconditions.checkNotNull(x));
+        uniq.add(requireNonNull(x));
       }
     }
 
@@ -111,7 +111,7 @@ interface Joinable<T> {
               ? toJoin.iterator().next()
               : strategy.join(toJoin);
 
-          uniq.add(Preconditions.checkNotNull(baseType.cast(joined)));
+          uniq.add(requireNonNull(baseType.cast(joined)));
         }
       }
 

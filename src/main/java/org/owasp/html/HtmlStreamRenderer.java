@@ -28,12 +28,12 @@
 
 package org.owasp.html;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -349,7 +349,6 @@ public class HtmlStreamRenderer implements HtmlStreamEventReceiver {
     return innerStart;
   }
 
-  @VisibleForTesting
   static boolean isValidHtmlName(String name) {
     int n = name.length();
     if (n == 0) { return false; }

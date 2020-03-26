@@ -3,10 +3,7 @@ package org.owasp.html;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 
 /**
  * Metadata about HTML elements.
@@ -124,7 +121,7 @@ public final class HtmlElementTables {
     COLGROUP_TAG = indexForName("colgroup");
     IFRAME_TAG = indexForName("iframe");
 
-    ImmutableList<FreeWrapper> freeWrappers = ImmutableList.of(
+    List<FreeWrapper> freeWrappers = CollectionHelper.immutableList(
         new FreeWrapper(
             LI_TAG,
             // LI_TAG is allowed here since an LI can appear when an LI is on
@@ -396,18 +393,18 @@ public final class HtmlElementTables {
     /**
      * Canonical element names by element index.
      */
-    public final ImmutableList<String> canonNames;
-    private transient ImmutableMap<String, Integer> canonNameToIndex;
+    public final List<String> canonNames;
+    private transient Map<String, Integer> canonNameToIndex;
     private transient int customElementIndex;
 
     /** */
     public HtmlElementNames(List<String> canonNames) {
-      this.canonNames = ImmutableList.copyOf(canonNames);
+      this.canonNames = CollectionHelper.immutableList(canonNames);
     }
 
     /** */
     HtmlElementNames(String... canonNames) {
-      this.canonNames = ImmutableList.copyOf(canonNames);
+      this.canonNames = CollectionHelper.immutableList(canonNames);
     }
 
     /**
@@ -416,11 +413,11 @@ public final class HtmlElementTables {
      */
     public int getElementNameIndex(String canonName) {
       if (canonNameToIndex == null) {
-        ImmutableMap.Builder<String, Integer> b = ImmutableMap.builder();
+        MapBuilder<String, Integer> b = new MapBuilder<>();
         for (int i = 0, n = this.canonNames.size(); i < n; ++i) {
           b.put(this.canonNames.get(i), i);
         }
-        canonNameToIndex = b.build();
+        canonNameToIndex = b.toImmutableMap();
         this.customElementIndex = canonNames.indexOf(CUSTOM_ELEMENT_NAME);
         Preconditions.checkState(this.customElementIndex >= 0);
       }
@@ -509,7 +506,7 @@ public final class HtmlElementTables {
         int lastVal = -1;
         for (int j = 1, m = arr.length; j < m; ++j) {
           int val = arr[j];
-          Preconditions.checkArgument(val > lastVal, arr);
+          Preconditions.checkArgument(val > lastVal);
           lastVal = val;
         }
       }

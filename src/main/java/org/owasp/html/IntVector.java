@@ -1,7 +1,5 @@
 package org.owasp.html;
 
-import com.google.common.base.Preconditions;
-
 final class IntVector {
   private int[] contents = ZERO_INTS;
   private int left, size;
