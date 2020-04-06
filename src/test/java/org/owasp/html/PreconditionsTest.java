@@ -13,12 +13,6 @@ class PreconditionsTest {
 
     private static final String MESSAGE = "message";
 
-    private static final String MESSAGE_TEMPLATE = "message %s";
-
-    private static final String MESSAGE_PARAMETER = "parameter";
-
-    private static final String MESSAGE_TEMPLATE_RESULT = "message parameter";
-
     @Test
     void shouldHandleCheckArgument() {
         checkArgument(true);
@@ -40,16 +34,6 @@ class PreconditionsTest {
     void shouldHandleCheckState() {
         checkState(true);
         assertThrows(IllegalStateException.class, () -> checkState(false));
-
-        checkState(true, MESSAGE);
-
-        try {
-            checkState(false, MESSAGE);
-            fail("Should have thrown exception");
-        } catch (Exception e) {
-            assertTrue(e instanceof IllegalStateException);
-            assertEquals(MESSAGE, e.getMessage());
-        }
     }
 
 }

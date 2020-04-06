@@ -51,21 +51,6 @@ final class Preconditions {
     }
 
     /**
-     * Ensures the truth of an expression involving the state of the calling instance, but not
-     * involving any parameters to the calling method.
-     *
-     * @author com.google.common.base.Preconditions
-     * @param expression a boolean expression
-     * @param message to be put into the create {@link IllegalStateException}
-     * @throws IllegalStateException if {@code expression} is false
-     */
-    static void checkState(boolean expression, String message) {
-        if (!expression) {
-            throw new IllegalStateException(message);
-        }
-    }
-
-    /**
      * @param a
      * @param matrixLength
      * @return 

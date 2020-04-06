@@ -21,13 +21,6 @@ import java.util.stream.Stream;
 final class CollectionHelper {
 
     /**
-     * @return a newly created empty {@link ArrayList}
-     */
-    static <E> List<E> mutableList() {
-        return new ArrayList<>();
-    }
-
-    /**
      * Creates a <i>mutable</i> {@code List} instance containing the given elements.
      *
      * @param elements to be added
@@ -39,18 +32,6 @@ final class CollectionHelper {
             return new ArrayList<>();
         }
         return new ArrayList<>(Arrays.asList(elements));
-    }
-
-    /**
-     * Creates a <i>mutable</i> {@code List} instance containing the given element
-     *
-     * @param element to be added
-     * @return the <i>mutable</i> {@link List} with the given element
-     */
-    static <E> List<E> mutableList(E element) {
-        List<E> list = new ArrayList<>();
-        list.add(element);
-        return list;
     }
 
     /**
@@ -79,40 +60,6 @@ final class CollectionHelper {
             return new ArrayList<>();
         }
         return new ArrayList<>(elements);
-    }
-
-    /**
-     * Creates a <i>mutable</i> {@code List} instance containing the given elements.
-     * <em>Caution:</em> The stream will be consumed by this operation
-     *
-     * @param elements to be added. If it is null an empty <i>mutable</i> {@code List} will be
-     *            returned
-     * @return the <i>mutable</i> {@code List} with the given elements
-     */
-    static <E> List<E> mutableList(Stream<? extends E> elements) {
-        List<E> list = new ArrayList<>();
-        if (isEmpty(elements)) {
-            return list;
-        }
-        elements.forEach(list::add);
-        return list;
-    }
-
-    /**
-     * Creates a <i>mutable</i> {@code List} instance containing the given elements.
-     *
-     * @param elements to be added. If it is null and empty <i>mutable</i> list will be returned
-     * @return the <i>mutable</i> {@link List} with the given elements
-     */
-    static <E> List<E> mutableList(Iterator<? extends E> elements) {
-        List<E> list = new ArrayList<>();
-        if (isEmpty(elements)) {
-            return list;
-        }
-        while (elements.hasNext()) {
-            list.add(elements.next());
-        }
-        return list;
     }
 
     /**
@@ -181,50 +128,10 @@ final class CollectionHelper {
     }
 
     /**
-     * Creates an <i>immutable</i> {@code List} instance containing the given elements.
-     * <em>Caution:</em> The stream will be consumed by this operation
-     *
-     * @param elements to be wrapped, must not be null
-     * @return the <i>immutable</i> {@link List} with the given elements
-     */
-    static <E> List<E> immutableList(Stream<? extends E> elements) {
-        if (isEmpty(elements)) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(mutableList(elements));
-    }
-
-    /**
-     * Creates an <i>immutable</i> {@code List} instance containing the given elements.
-     *
-     * @param elements to be wrapped, must not be null
-     * @return the <i>immutable</i> {@link List} with the given elements
-     */
-    static <E> List<E> immutableList(Iterator<? extends E> elements) {
-        if (isEmpty(elements)) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(mutableList(elements));
-    }
-
-    /**
      * @return a newly created empty {@link HashSet}
      */
     static <E> Set<E> mutableSet() {
         return new HashSet<>();
-    }
-
-    /**
-     * @param element to be added. If it is {@code null} it will not be added
-     * @return a newly created empty {@link HashSet} with the given elements
-     */
-    static <E> Set<E> mutableSet(E element) {
-        Set<E> set = new HashSet<>();
-        if (null == element) {
-            return set;
-        }
-        set.add(element);
-        return set;
     }
 
     /**
@@ -253,53 +160,6 @@ final class CollectionHelper {
         elements.forEach(set::add);
         return set;
 
-    }
-
-    /**
-     * Creates a <i>mutable</i> {@code Set} instance containing the given elements.
-     *
-     * @param elements to be added. If it is null and empty <i>mutable</i> list will be returned
-     * @return the <i>mutable</i> {@link Set} with the given elements
-     */
-    static <E> Set<E> mutableSet(Collection<? extends E> elements) {
-        if (isEmpty(elements)) {
-            return new HashSet<>();
-        }
-        return new HashSet<>(elements);
-    }
-
-    /**
-     * Creates a <i>mutable</i> {@code Set} instance containing the given elements.
-     *
-     * @param elements to be added. If it is null and empty <i>mutable</i> list will be returned
-     * @return the <i>mutable</i> {@link Set} with the given elements
-     */
-    static <E> Set<E> mutableSet(Iterator<? extends E> elements) {
-        Set<E> set = new HashSet<>();
-        if (isEmpty(elements)) {
-            return set;
-        }
-        while (elements.hasNext()) {
-            set.add(elements.next());
-        }
-        return set;
-    }
-
-    /**
-     * Creates a <i>mutable</i> {@code Set} instance containing the given elements.
-     * <em>Caution:</em> The stream will be consumed by this operation
-     *
-     * @param elements to be added. If it is null and empty <i>mutable</i> {@link Set} will be
-     *            returned
-     * @return the <i>mutable</i> {@link Set} with the given elements
-     */
-    static <E> Set<E> mutableSet(Stream<? extends E> elements) {
-        Set<E> set = new HashSet<>();
-        if (isEmpty(elements)) {
-            return set;
-        }
-        elements.forEach(set::add);
-        return set;
     }
 
     /**
@@ -344,33 +204,6 @@ final class CollectionHelper {
      * @return the <i>immutable</i> {@link Set} with the given elements
      */
     static <E> Set<E> immutableSet(Iterable<? extends E> elements) {
-        if (isEmpty(elements)) {
-            return Collections.emptySet();
-        }
-        return Collections.unmodifiableSet(mutableSet(elements));
-    }
-
-    /**
-     * Creates an <i>immutable</i> {@code Set} instance containing the given elements.
-     *
-     * @param elements to be wrapped, must not be null
-     * @return the <i>immutable</i> {@link Set} with the given elements
-     */
-    static <E> Set<E> immutableSet(Iterator<? extends E> elements) {
-        if (isEmpty(elements)) {
-            return Collections.emptySet();
-        }
-        return Collections.unmodifiableSet(mutableSet(elements));
-    }
-
-    /**
-     * Creates an <i>immutable</i> {@code Set} instance containing the given elements.
-     * <em>Caution:</em> The stream will be consumed by this operation
-     *
-     * @param elements to be wrapped, must not be null
-     * @return the <i>immutable</i> {@link Set} with the given elements
-     */
-    static <E> Set<E> immutableSet(Stream<? extends E> elements) {
         if (isEmpty(elements)) {
             return Collections.emptySet();
         }
@@ -501,48 +334,6 @@ final class CollectionHelper {
         map.put(k2, v2);
         return Collections.unmodifiableMap(map);
     }
-
-    /**
-     * Convenience method for the inline creation of a map with values
-     *
-     * @param k1 key to be added
-     * @param v1 value to be added
-     * @param k2 key to be added
-     * @param v2 value to be added
-     * @param k3 key to be added
-     * @param v3 value to be added
-     * @return an <i>immutable</i> Map with the given elements
-     */
-    static <K, V> Map<K, V> immutableMap(K k1, V v1, K k2, V v2, K k3, V v3) {
-        Map<K, V> map = mutableMap();
-        map.put(k1, v1);
-        map.put(k2, v2);
-        map.put(k3, v3);
-        return Collections.unmodifiableMap(map);
-    }
-
-    /**
-     * Convenience method for the inline creation of a map with values
-     *
-     * @param k1 key to be added
-     * @param v1 value to be added
-     * @param k2 key to be added
-     * @param v2 value to be added
-     * @param k3 key to be added
-     * @param v3 value to be added
-     * @param k4 key to be added
-     * @param v4 value to be added
-     * @return an <i>immutable</i> Map with the given elements
-     */
-    @SuppressWarnings("squid:S00107") // owolff: Number of parameters match to the use-case
-    static <K, V> Map<K, V> immutableMap(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-        Map<K, V> map = mutableMap();
-        map.put(k1, v1);
-        map.put(k2, v2);
-        map.put(k3, v3);
-        map.put(k4, v4);
-        return Collections.unmodifiableMap(map);
-    }
     
     /**
      * Convenience method for the inline creation of a map with values
@@ -603,33 +394,11 @@ final class CollectionHelper {
     /**
      * Simple check method for a {@code null} safe check of the emptiness of the given parameter.
      *
-     * @param map to be checked, may be null
-     * @return {@code true} is the given elements are {@code null} or {@code empty}
-     */
-    static boolean isEmpty(Map<?, ?> map) {
-        return null == map || map.isEmpty();
-    }
-
-    /**
-     * Simple check method for a {@code null} safe check of the emptiness of the given parameter.
-     *
      * @param elements to be checked, may be null
      * @return {@code true} is the given elements are {@code null} or {@code empty}
      */
     static boolean isEmpty(Iterator<?> elements) {
         return null == elements || !elements.hasNext();
-    }
-
-    /**
-     * Simple check method for a {@code null} safe check of the emptiness of the given parameter.
-     * <em>Caution: </em> In order not to consume the stream only a null check will be performed.
-     *
-     * @param elements to be checked, may be null
-     * @return {@code true} is the given elements are {@code null}. The Stream content will be
-     *         untouched
-     */
-    public static boolean isEmpty(Stream<?> elements) {
-        return null == elements;
     }
 
     private CollectionHelper() {

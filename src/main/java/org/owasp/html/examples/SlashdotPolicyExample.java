@@ -34,8 +34,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 import org.owasp.html.Handler;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.HtmlSanitizer;
@@ -99,7 +97,7 @@ public class SlashdotPolicyExample {
     }
     System.err.println("[Reading from STDIN]");
     // Fetch the HTML to sanitize.
-    String html = CharStreams.toString(
+    String html = EbayPolicyExample.inputStreamToString(
         new InputStreamReader(System.in, StandardCharsets.UTF_8));
     // Set up an output channel to receive the sanitized HTML.
     HtmlStreamRenderer renderer = HtmlStreamRenderer.create(

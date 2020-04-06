@@ -28,15 +28,14 @@
 
 package org.owasp.html.examples;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
 import org.owasp.html.Handler;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.HtmlSanitizer;
@@ -209,14 +208,15 @@ public class EbayPolicyExample {
     }
     System.err.println("[Reading from STDIN]");
     // Fetch the HTML to sanitize.
-    String html = CharStreams.toString(
+    String html = inputStreamToString(
         new InputStreamReader(System.in, StandardCharsets.UTF_8));
     // Set up an output channel to receive the sanitized HTML.
     HtmlStreamRenderer renderer = HtmlStreamRenderer.create(
         System.out,
         // Receives notifications on a failure to write to the output.
         new Handler<IOException>() {
-          public void handle(IOException ex) {
+          @Override
+        public void handle(IOException ex) {
             // System.out suppresses IOExceptions
             throw new AssertionError(null, ex);
           }
@@ -224,7 +224,8 @@ public class EbayPolicyExample {
         // Our HTML parser is very lenient, but this receives notifications on
         // truly bizarre inputs.
         new Handler<String>() {
-          public void handle(String x) {
+          @Override
+        public void handle(String x) {
             throw new AssertionError(x);
           }
         });
@@ -232,7 +233,13 @@ public class EbayPolicyExample {
     HtmlSanitizer.sanitize(html, POLICY_DEFINITION.apply(renderer));
   }
 
-  private static Predicate<String> matchesEither(
+
+ static String inputStreamToString(InputStreamReader inputStreamReader) {
+     return new BufferedReader(inputStreamReader)
+             .lines().collect(Collectors.joining("\n"));
+}
+
+private static Predicate<String> matchesEither(
       final Pattern a, final Pattern b) {
     return new Predicate<String>() {
       public boolean apply(String s) {
@@ -243,7 +250,8 @@ public class EbayPolicyExample {
       // java.util.function.Predicate.
       // For some reason the default test method implementation that calls
       // through to apply is not assumed here.
-      @SuppressWarnings("all")
+      @Override
+    @SuppressWarnings("all")
       public boolean test(String s) {
         return apply(s);
       }

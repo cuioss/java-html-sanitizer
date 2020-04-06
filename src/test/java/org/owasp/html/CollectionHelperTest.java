@@ -80,10 +80,6 @@ class CollectionHelperTest {
         assertMutable(mutableList(Arrays.asList("1", "2")));
         assertMutable(mutableList((Iterable<String>) null));
         assertMutable(mutableList((Iterable<String>) Arrays.asList("1", "2")));
-        assertMutable(mutableList((Iterator<String>) null));
-        assertMutable(mutableList(Arrays.asList("1", "2").iterator()));
-        assertMutable(mutableList((Stream<String>) null));
-        assertMutable(mutableList(Arrays.asList("1", "2").stream()));
     }
 
     @Test
@@ -98,10 +94,6 @@ class CollectionHelperTest {
         assertImmutable(immutableList(Arrays.asList("1", "2")));
         assertImmutable(immutableList(mutableSet("1", "2")));
         assertImmutable(immutableList((Iterable<String>) Arrays.asList("1", "2")));
-        assertImmutable(immutableList((Iterator<String>) null));
-        assertImmutable(immutableList(Arrays.asList("1", "2").iterator()));
-        assertImmutable(immutableList((Stream<String>) null));
-        assertImmutable(immutableList(Arrays.asList("1", "2").stream()));
     }
 
     @Test
@@ -115,10 +107,6 @@ class CollectionHelperTest {
         assertMutable(mutableSet(Arrays.asList("1", "2")));
         assertMutable(mutableSet((Iterable<String>) null));
         assertMutable(mutableSet((Iterable<String>) Arrays.asList("1", "2")));
-        assertMutable(mutableSet((Iterator<String>) null));
-        assertMutable(mutableSet(Arrays.asList("1", "2").iterator()));
-        assertMutable(mutableSet((Stream<String>) null));
-        assertMutable(mutableSet(Arrays.asList("1", "2").stream()));
     }
 
     @Test
@@ -131,10 +119,6 @@ class CollectionHelperTest {
         assertImmutable(immutableSet(Arrays.asList("1", "2")));
         assertImmutable(immutableSet((Iterable<String>) null));
         assertImmutable(immutableSet((Iterable<String>) Arrays.asList("1", "2")));
-        assertImmutable(immutableSet((Iterator<String>) null));
-        assertImmutable(immutableSet(Arrays.asList("1", "2").iterator()));
-        assertImmutable(immutableSet((Stream<String>) null));
-        assertImmutable(immutableSet(Arrays.asList("1", "2").stream()));
 
     }
 
@@ -153,8 +137,6 @@ class CollectionHelperTest {
         assertImmutable(immutableMap(mutableMap("1", "2")));
         assertImmutable(immutableMap("1", "2"));
         assertImmutable(immutableMap("1", "1-1", "2", "2-2"));
-        assertImmutable(immutableMap("1", "1-1", "2", "2-2", "3", "3-3"));
-        assertImmutable(immutableMap("1", "1-1", "2", "2-2", "3", "3-3", "4", "4-4"));
     }
 
     static final void assertMutable(Collection<String> collection) {
