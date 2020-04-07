@@ -1,5 +1,11 @@
 # OWASP Java HTML Sanitizer Change Log
 
+Guava-removal
+  * /parent/pom.xml:
+  	* Setting java base to 1.8
+  	* Dependency-management for junit
+  	* Setting guava to test 
+
 Most recent at top.
   * Pending
     * Fix table formatting

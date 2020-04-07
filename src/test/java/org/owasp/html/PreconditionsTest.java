@@ -1,22 +1,26 @@
 package org.owasp.html;
 
+import static org.junit.Assert.*;
 import static org.owasp.html.Preconditions.checkArgument;
 import static org.owasp.html.Preconditions.checkState;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class PreconditionsTest {
+
+public class PreconditionsTest {
 
     private static final String MESSAGE = "message";
 
     @Test
-    void shouldHandleCheckArgument() {
+    public void shouldHandleCheckArgument() {
         checkArgument(true);
-        assertThrows(IllegalArgumentException.class, () -> checkArgument(false));
+        
+        try {
+            checkArgument(false);
+            fail("Should have thrown exception");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
 
         checkArgument(true, MESSAGE);
 
@@ -31,9 +35,16 @@ class PreconditionsTest {
 
 
     @Test
-    void shouldHandleCheckState() {
+    public void shouldHandleCheckState() {
         checkState(true);
-        assertThrows(IllegalStateException.class, () -> checkState(false));
+        
+        try {
+            checkState(false);
+            fail("Should have thrown exception");
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalStateException);
+        }
+
     }
 
 }

@@ -1,9 +1,9 @@
 package org.owasp.html;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.owasp.html.CollectionHelper.immutableList;
 import static org.owasp.html.CollectionHelper.immutableMap;
 import static org.owasp.html.CollectionHelper.immutableSet;
@@ -22,10 +22,11 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-class CollectionHelperTest {
+@SuppressWarnings("javadoc")
+public class CollectionHelperTest {
 
     @Test
-    void shouldDetermineEmptinessForVarags() {
+    public void shouldDetermineEmptinessForVarags() {
         assertFalse(isEmpty("1"));
         assertFalse(isEmpty("1", "2"));
         assertTrue(isEmpty(Collections.emptyList().toArray()));
@@ -34,7 +35,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldDetermineEmptinessForIterable() {
+    public  void shouldDetermineEmptinessForIterable() {
         assertFalse(isEmpty((Iterable<?>) mutableList("1")));
         assertFalse(isEmpty((Iterable<?>) mutableList("1", "2")));
         assertTrue(isEmpty((Iterable<?>) Collections.emptyList()));
@@ -43,7 +44,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldDetermineEmptinessForCollection() {
+    public  void shouldDetermineEmptinessForCollection() {
         assertFalse(isEmpty(mutableList("1")));
         assertFalse(isEmpty(mutableList("1", "2")));
         assertTrue(isEmpty(Collections.emptyList()));
@@ -52,7 +53,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldDetermineEmptinessForIterator() {
+    public void shouldDetermineEmptinessForIterator() {
         assertFalse(isEmpty(mutableList("1").iterator()));
         assertFalse(isEmpty(mutableList("1", "2").iterator()));
         assertTrue(isEmpty(Collections.emptyList().iterator()));
@@ -61,15 +62,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldDetermineEmptinessForStream() {
-        assertFalse(isEmpty(mutableList("1").stream()));
-        assertFalse(isEmpty(Collections.emptyList().stream()));
-        assertTrue(isEmpty((Stream<?>) null));
-
-    }
-    
-    @Test
-    void shouldHandleMutableList() {
+    public void shouldHandleMutableList() {
         assertMutable(mutableList());
         assertMutable(mutableList((String[]) null));
         assertMutable(mutableList((String) null));
@@ -83,7 +76,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldHandleImmutableList() {
+    public void shouldHandleImmutableList() {
         assertImmutable(immutableList());
         assertImmutable(immutableList((String[]) null));
         assertImmutable(immutableList((String) null));
@@ -97,7 +90,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldHandleMutableSet() {
+    public void shouldHandleMutableSet() {
         assertMutable(mutableSet());
         assertMutable(mutableSet((String[]) null));
         assertMutable(mutableSet((String) null));
@@ -110,7 +103,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldHandleImmutableSet() {
+    public void shouldHandleImmutableSet() {
         assertImmutable(immutableSet());
         assertImmutable(immutableSet((String[]) null));
         assertImmutable(immutableSet((String) null));
@@ -123,7 +116,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldHandleMutableMap() {
+    public void shouldHandleMutableMap() {
         assertMutable(mutableMap());
         assertMutable(mutableMap("1", "1-1"));
         assertMutable(mutableMap("1", "1-1", "2", "2-2"));
@@ -132,7 +125,7 @@ class CollectionHelperTest {
     }
 
     @Test
-    void shouldHandleImmutableMap() {
+    public void shouldHandleImmutableMap() {
         assertImmutable(immutableMap());
         assertImmutable(immutableMap(mutableMap("1", "2")));
         assertImmutable(immutableMap("1", "2"));
